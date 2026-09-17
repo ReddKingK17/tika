@@ -132,6 +132,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <plugin>
+    <groupId>io.github.zju-aces-ise</groupId>
+    <artifactId>chatunitest-maven-plugin</artifactId>
+    <version>2.1.1</version>
+    <configuration>
+        <apiKeys>${chatunitest.apiKey}</apiKeys>
+        <model>gpt-4o-mini</model>
+    </configuration>
+</plugin>
         <version>${checkstyle.plugin.version}</version>
         <dependencies>
           <dependency>
