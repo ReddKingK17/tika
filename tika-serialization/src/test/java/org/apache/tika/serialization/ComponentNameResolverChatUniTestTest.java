@@ -49,13 +49,7 @@ public class ComponentNameResolverChatUniTestTest {
             () -> ComponentNameResolver.usesCompactFormat(null));
     }
     /**
-     * Verifies that the error message lists known components when registries are populated.
-     * This distinguishes the non-empty registry branch from the empty registry branch.
-     */
-    /**
-     * Verifies that the error message explicitly explains when no component registry
-     * is available. This distinguishes the empty-registry branch from the branch that
-     * lists registered components.
+     * Verifies that the unregistered-component message matches the current registry state.
      */
     @Test
     public void unregisteredMessageMatchesRegistryState() {
