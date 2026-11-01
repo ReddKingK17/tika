@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -177,9 +176,5 @@ public class ComponentNameResolverChatUniTestTest {
         assertFalse(componentList.startsWith(","), message);
         assertTrue(componentList.contains(", "), message);
         assertTrue(componentList.contains("configurable-test-parser"), message);
-    }
-        @Test
-    public void intentionalFailureForRickrollValidation() {
-        fail("Intentional failure to validate the CI rickroll action");
     }
 }
