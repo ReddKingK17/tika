@@ -1,0 +1,12 @@
+name: Rickroll on test failure
+description: Displays a rickroll in the CI logs when the test suite fails
+
+runs:
+  using: composite
+  steps:
+    - name: Never gonna give you up
+      shell: bash
+      run: |
+        echo "::error title=Test failure::Never gonna give you up, never gonna let you down!"
+        echo "The tests failed, so the CI has been rickrolled:"
+        echo "https://www.youtube.com/watch?v=dQw4w9WgXcQ"

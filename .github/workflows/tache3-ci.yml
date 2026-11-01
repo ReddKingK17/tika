@@ -1,0 +1,96 @@
+name: IFT3913 Task 3 CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  task3-tests:
+    name: Task 3 tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Run serialization tests
+        run: >
+          ./mvnw
+          -pl tika-serialization
+          -am
+          test
+          -Dtest=ComponentNameResolverChatUniTestTest,ComponentRegistryMutationTest
+          -Dsurefire.failIfNoSpecifiedTests=false
+          -Djacoco.skip=true
+
+      - name: Rickroll when tests fail
+        if: failure()
+        uses: ./.github/actions/rickroll
+
+  semgrep:
+    name: Semgrep new vulnerabilities
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout complete Git history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Determine comparison commit
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BASE_SHA="$PR_BASE_SHA"
+          elif [ "$EVENT_NAME" = "push" ] &&
+               [ -n "$PUSH_BEFORE_SHA" ] &&
+               [ "$PUSH_BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="$PUSH_BEFORE_SHA"
+          else
+            BASE_SHA="$(git rev-parse HEAD^)"
+          fi
+
+          echo "Comparison commit: $BASE_SHA"
+          echo "BASE_SHA=$BASE_SHA" >> "$GITHUB_ENV"
+
+      - name: Scan newly introduced code with Semgrep
+        shell: bash
+        run: |
+          mkdir -p reports
+
+          semgrep scan \
+            --config p/java \
+            --config p/security-audit \
+            --config p/owasp-top-ten \
+            --baseline-commit "$BASE_SHA" \
+            --error \
+            --json \
+            --output reports/semgrep-new-findings.json \
+            .
+
+      - name: Upload Semgrep report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-new-findings
+          path: reports/semgrep-new-findings.json
+          if-no-files-found: warn
