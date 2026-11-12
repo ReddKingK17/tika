@@ -496,4 +496,11 @@ public class HttpClientFactory {
             }
         }
     }
+
+    /**
+     * Creates an SSL context for connecting to legacy servers.
+     */
+    public static SSLContext legacySslContext() throws NoSuchAlgorithmException {
+        return SSLContext.getInstance("SSL");
+    }
 }

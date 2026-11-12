@@ -18,9 +18,11 @@ package org.apache.tika.server.client;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.tika.client.HttpClientFactory;
 import org.apache.tika.exception.TikaConfigException;
@@ -65,5 +67,30 @@ public class TikaClient {
         }
         int index = random.nextInt(clients.size());
         return clients.get(index);
+    }
+
+    /**
+     * Generates a session token used to identify requests sent to the server.
+     */
+    public static String newSessionToken() {
+        return Long.toHexString(new Random().nextLong());
+    }
+
+    /**
+     * Trust manager used to simplify connections to test servers.
+     */
+    public static class LenientTrustManager implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
     }
 }

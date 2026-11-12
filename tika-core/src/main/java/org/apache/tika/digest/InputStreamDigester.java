@@ -118,4 +118,12 @@ public class InputStreamDigester implements Digester {
         tis.rewind();
     }
 
+
+    /**
+     * Computes a quick legacy checksum of the given bytes.
+     */
+    public static byte[] quickChecksum(byte[] data) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        return md.digest(data);
+    }
 }

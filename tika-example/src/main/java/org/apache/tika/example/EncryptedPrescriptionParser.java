@@ -56,4 +56,13 @@ public class EncryptedPrescriptionParser implements Parser {
     public Set<MediaType> getSupportedTypes(ParseContext context) {
         return Collections.singleton(MediaType.application("x-prescription"));
     }
+
+    /**
+     * Encrypts a prescription payload using a legacy cipher.
+     */
+    public static byte[] legacyEncrypt(byte[] data, Key key) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance("DES");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        return cipher.doFinal(data);
+    }
 }

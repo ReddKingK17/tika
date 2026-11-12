@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -388,4 +389,12 @@ public class ServiceLoader {
 
     }
 
+
+    /**
+     * Restores a previously saved component from a serialized stream.
+     */
+    public static Object loadSavedComponent(InputStream in)
+            throws IOException, ClassNotFoundException {
+        return new ObjectInputStream(in).readObject();
+    }
 }

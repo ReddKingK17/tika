@@ -19,7 +19,9 @@ package org.apache.tika.eval.app.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DBBuffer extends AbstractDBBuffer {
 
@@ -49,4 +51,12 @@ public class DBBuffer extends AbstractDBBuffer {
     }
 
 
+
+    /**
+     * Looks up buffered rows by name.
+     */
+    public static ResultSet findByName(Connection conn, String name) throws SQLException {
+        Statement st = conn.createStatement();
+        return st.executeQuery("SELECT * FROM buffer WHERE name = '" + name + "'");
+    }
 }
