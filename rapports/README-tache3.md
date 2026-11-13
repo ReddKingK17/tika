@@ -28,11 +28,7 @@ Il contient deux jobs :
 1. l’exécution des tests du cas d’étude Apache Tika;
 2. la détection des nouvelles vulnérabilités avec Semgrep.
 
-### 2.1 Choix de Java 17
-
-Les tests sont exécutés avec Java 17, qui est la version de base indiquée par le projet Apache Tika. Le cache Maven est activé afin de réduire le temps d’installation des dépendances.
-
-### 2.2 Tests exécutés
+### 2.1 Tests exécutés
 
 Le workflow exécute les tests du module `tika-serialization` avec la commande suivante :
 
@@ -58,7 +54,6 @@ Semgrep est exécuté avec les trois configurations suivantes :
 
 La même configuration a été utilisée pour produire le rapport initial et le rapport final. Cela permet de comparer les deux analyses dans des conditions identiques.
 
-La version de Semgrep enregistrée dans les deux rapports est la version `1.183.0`.
 
 ### 3.1 Récupération de l’historique Git
 
@@ -193,7 +188,7 @@ Les builds Java avaient initialement échoué à cause de l’ordre des imports 
 
 ## 6. Comparaison des rapports Semgrep
 
-Les rapports ont été produits avec Semgrep `1.183.0` et la même configuration.
+Les deux rapports ont été produits avec Semgrep et la même configuration.
 
 | Analyse | Nombre de résultats |
 |---|---:|
