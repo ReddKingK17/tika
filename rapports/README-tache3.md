@@ -2,22 +2,21 @@
 
 ## Membres du binôme
 
-- **Nom 1** — Matricule : `XXXXXXXX`
-- **Nom 2** — Matricule : `XXXXXXXX`
+- **Prénom Nom** — Matricule : `XXXXXXXX`
+- **Prénom Nom** — Matricule : `XXXXXXXX`
 
 ## 1. Dépôt et fichiers principaux
 
 - Dépôt GitHub : https://github.com/ReddKingK17/tika
 - Workflow : [`.github/workflows/tache3-ci.yml`](../.github/workflows/tache3-ci.yml)
 - Action Rickroll : [`.github/actions/rickroll/action.yml`](../.github/actions/rickroll/action.yml)
-- Rapport Semgrep avant les modifications : [`baseline.json`](baseline.json)
-- Rapport Semgrep après les modifications : [`after.json`](after.json)
+- Rapport avant les modifications : [`baseline.json`](baseline.json)
+- Rapport après les modifications : [`after.json`](after.json)
 - Pull request des vulnérabilités : https://github.com/ReddKingK17/tika/pull/2
 
 ## 2. Modification du workflow GitHub Actions
 
-Le workflow ajouté pour la tâche 3 se trouve dans le fichier
-`.github/workflows/tache3-ci.yml`. Il s’exécute lors :
+Le workflow ajouté pour la tâche 3 se trouve dans `.github/workflows/tache3-ci.yml`. Il s’exécute lors :
 
 - d’un push sur la branche `main`;
 - d’une pull request vers `main`;
@@ -53,7 +52,6 @@ Semgrep est exécuté avec les trois configurations suivantes :
 - `p/owasp-top-ten`.
 
 La même configuration a été utilisée pour produire le rapport initial et le rapport final. Cela permet de comparer les deux analyses dans des conditions identiques.
-
 
 ### 3.1 Récupération de l’historique Git
 
@@ -94,7 +92,7 @@ semgrep scan \
 
 L’option `--baseline-commit` limite les résultats bloquants au code introduit depuis le commit de référence. Les vulnérabilités déjà présentes dans le projet ne sont donc pas considérées comme nouvellement introduites.
 
-L’option `--error` donne un code de sortie différent de zéro lorsque Semgrep détecte un nouveau résultat bloquant. Cela provoque l’échec du job GitHub Actions, conformément à l’objectif de la tâche.
+L’option `--error` produit un code de sortie différent de zéro lorsque Semgrep détecte un nouveau résultat bloquant. Cela provoque l’échec du job GitHub Actions, conformément à l’objectif de la tâche.
 
 ### 3.4 Conservation du rapport
 
@@ -120,7 +118,7 @@ L’élément humoristique demandé est implémenté comme une action composite 
 .github/actions/rickroll/action.yml
 ```
 
-Elle est invoquée par le workflow lorsque les tests du cas d’étude échouent :
+Elle est invoquée lorsque les tests du cas d’étude échouent :
 
 ```yaml
 - name: Rickroll when tests fail
@@ -128,7 +126,7 @@ Elle est invoquée par le workflow lorsque les tests du cas d’étude échouent
   uses: ./.github/actions/rickroll
 ```
 
-L’action affiche une annotation d’erreur GitHub contenant le message :
+L’action affiche une annotation GitHub contenant le message :
 
 > Never gonna give you up, never gonna let you down!
 
@@ -198,9 +196,9 @@ Les deux rapports ont été produits avec Semgrep et la même configuration.
 
 Les neuf nouveaux résultats correspondent aux sept vulnérabilités introduites.
 
-La vulnérabilité du gestionnaire de certificats TLS produit trois résultats, car Semgrep signale séparément les trois méthodes de validation vides. Les six autres vulnérabilités produisent chacune un résultat.
+La vulnérabilité du gestionnaire de certificats TLS produit trois résultats, car Semgrep signale séparément ses trois méthodes de validation vides. Les six autres vulnérabilités produisent chacune un résultat.
 
-Les sept vulnérabilités correspondent à sept règles Semgrep distinctes. DES et le contexte SSL faible partagent le CWE-326, mais constituent deux types techniques différents et sont détectés par deux règles Semgrep différentes.
+Les sept vulnérabilités correspondent à sept règles Semgrep distinctes. DES et le contexte SSL faible partagent le CWE-326, mais constituent deux types techniques différents et sont détectés par deux règles différentes.
 
 ## 7. Résumé des vulnérabilités introduites
 
@@ -216,10 +214,10 @@ Les sept vulnérabilités correspondent à sept règles Semgrep distinctes. DES 
 
 ## 8. Vulnérabilité 1 : désérialisation non sûre
 
-**Type :** désérialisation de données non fiables
-**CWE :** CWE-502
-**Commit :** `2316dec68`
-**Ligne signalée :** 398
+- **Type :** désérialisation de données non fiables
+- **CWE :** CWE-502
+- **Commit :** `2316dec68`
+- **Ligne signalée :** 398
 
 ### 8.1 Fichier modifié
 
@@ -248,19 +246,16 @@ Un correctif serait d’éviter la sérialisation Java native pour les données 
 
 ### 8.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.object-deserialization.object-deserialization`
-
+- Règle : `java.lang.security.audit.object-deserialization.object-deserialization`
 - Résultats nouvellement introduits : **1**
 - Absent du rapport initial.
 
 ## 9. Vulnérabilité 2 : hachage faible MD5
 
-**Type :** algorithme de hachage faible
-**CWE :** CWE-328
-**Commit :** `34a8e3201`
-**Ligne signalée :** 126
+- **Type :** algorithme de hachage faible
+- **CWE :** CWE-328
+- **Commit :** `34a8e3201`
+- **Ligne signalée :** 126
 
 ### 9.1 Fichier modifié
 
@@ -290,19 +285,16 @@ Un correctif serait d’utiliser SHA-256, SHA-512 ou un HMAC lorsqu’une authen
 
 ### 9.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.crypto.use-of-md5.use-of-md5`
-
+- Règle : `java.lang.security.audit.crypto.use-of-md5.use-of-md5`
 - Résultats nouvellement introduits : **1**
 - Absent du rapport initial.
 
 ## 10. Vulnérabilité 3 : chiffrement DES obsolète
 
-**Type :** algorithme de chiffrement obsolète
-**CWE :** CWE-326
-**Commit :** `776074a46`
-**Ligne signalée :** 64
+- **Type :** algorithme de chiffrement obsolète
+- **CWE :** CWE-326
+- **Commit :** `776074a46`
+- **Ligne signalée :** 64
 
 ### 10.1 Fichier modifié
 
@@ -327,25 +319,22 @@ public static byte[] legacyEncrypt(byte[] data, Key key)
 
 DES utilise une clé effective de seulement 56 bits et n’offre plus une protection suffisante contre les attaques par force brute.
 
-De plus, demander simplement l’algorithme `"DES"` peut sélectionner le mode ECB. Ce mode révèle les motifs répétitifs du texte clair.
+De plus, demander simplement l’algorithme `"DES"` peut sélectionner le mode ECB, qui révèle les motifs répétitifs du texte clair.
 
 Un correctif serait d’utiliser un chiffrement authentifié moderne, comme `AES/GCM/NoPadding`.
 
 ### 10.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.crypto.des-is-deprecated.des-is-deprecated`
-
+- Règle : `java.lang.security.audit.crypto.des-is-deprecated.des-is-deprecated`
 - Résultats nouvellement introduits : **1**
 - Absent du rapport initial.
 
 ## 11. Vulnérabilité 4 : générateur aléatoire non sécurisé
 
-**Type :** génération prévisible d’un jeton
-**CWE :** CWE-330
-**Commit :** `8bdbcb93d`
-**Ligne signalée :** 76
+- **Type :** génération prévisible d’un jeton
+- **CWE :** CWE-330
+- **Commit :** `8bdbcb93d`
+- **Ligne signalée :** 76
 
 ### 11.1 Fichier modifié
 
@@ -373,19 +362,16 @@ Un correctif serait d’utiliser `java.security.SecureRandom` et des jetons poss
 
 ### 11.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.crypto.weak-random.weak-random`
-
+- Règle : `java.lang.security.audit.crypto.weak-random.weak-random`
 - Résultats nouvellement introduits : **1**
 - Absent du rapport initial.
 
 ## 12. Vulnérabilité 5 : validation de certificat TLS désactivée
 
-**Type :** validation incorrecte de certificat
-**CWE :** CWE-295
-**Commit :** `46bd605ba`
-**Lignes signalées :** 83, 87 et 91
+- **Type :** validation incorrecte de certificat
+- **CWE :** CWE-295
+- **Commit :** `46bd605ba`
+- **Lignes signalées :** 83, 87 et 91
 
 ### 12.1 Fichier modifié
 
@@ -426,20 +412,17 @@ Un correctif serait d’utiliser le gestionnaire de confiance par défaut de la 
 
 ### 12.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.crypto.ssl.insecure-trust-manager.insecure-trust-manager`
-
+- Règle : `java.lang.security.audit.crypto.ssl.insecure-trust-manager.insecure-trust-manager`
 - Résultats nouvellement introduits : **3**
 - Un résultat est produit pour chacune des trois méthodes.
 - Absent du rapport initial.
 
 ## 13. Vulnérabilité 6 : contexte SSL faible
 
-**Type :** utilisation d’un protocole cryptographique faible
-**CWE :** CWE-326
-**Commit :** `18a1faea9`
-**Ligne signalée :** 504
+- **Type :** utilisation d’un protocole cryptographique faible
+- **CWE :** CWE-326
+- **Commit :** `18a1faea9`
+- **Ligne signalée :** 504
 
 ### 13.1 Fichier modifié
 
@@ -468,19 +451,16 @@ Un correctif serait d’utiliser TLS 1.2 ou TLS 1.3.
 
 ### 13.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.weak-ssl-context.weak-ssl-context`
-
+- Règle : `java.lang.security.audit.weak-ssl-context.weak-ssl-context`
 - Résultats nouvellement introduits : **1**
 - Absent du rapport initial.
 
 ## 14. Vulnérabilité 7 : injection SQL
 
-**Type :** construction non sécurisée d’une requête SQL
-**CWE :** CWE-89
-**Commit :** `89de743bd`
-**Ligne signalée :** 60
+- **Type :** construction non sécurisée d’une requête SQL
+- **CWE :** CWE-89
+- **Commit :** `89de743bd`
+- **Ligne signalée :** 60
 
 ### 14.1 Fichier modifié
 
@@ -524,10 +504,7 @@ statement.setString(1, name);
 
 ### 14.4 Résultat Semgrep
 
-- Règle :
-
-  `java.lang.security.audit.formatted-sql-string.formatted-sql-string`
-
+- Règle : `java.lang.security.audit.formatted-sql-string.formatted-sql-string`
 - Résultats nouvellement introduits : **1**
 - Aucun résultat de cette règle n’était présent dans `DBBuffer.java` avant la modification.
 
@@ -535,7 +512,7 @@ statement.setString(1, name);
 
 Le workflow GitHub Actions remplit le comportement attendu :
 
-- les tests sélectionnés du cas d’étude Apache Tika sont exécutés avec Java 17;
+- les tests sélectionnés du cas d’étude Apache Tika sont exécutés automatiquement;
 - une action réutilisable Rickroll est invoquée lorsqu’un test échoue;
 - le code courant est comparé à un commit de référence;
 - les anciennes alertes Semgrep ne bloquent pas seules un nouveau commit;
@@ -543,6 +520,6 @@ Le workflow GitHub Actions remplit le comportement attendu :
 - le rapport JSON est conservé comme artefact;
 - les rapports avant et après permettent de vérifier la différence.
 
-L’analyse initiale contient 42 résultats. Après l’introduction des sept vulnérabilités, l’analyse contient 51 résultats. Les neuf résultats supplémentaires sont tous expliqués par les sept vulnérabilités ajoutées.
+L’analyse initiale contient 42 résultats. Après l’introduction des sept vulnérabilités, l’analyse contient 51 résultats. Les neuf résultats supplémentaires sont expliqués par les sept vulnérabilités ajoutées.
 
-Le dernier run sur `main` confirme le résultat final : les tests réussissent, tandis que Semgrep échoue volontairement en raison des nouvelles vulnérabilités.
+Le run de validation avec les vulnérabilités confirme le comportement recherché : les tests réussissent, tandis que Semgrep échoue volontairement en raison des nouveaux résultats.
