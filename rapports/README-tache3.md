@@ -3,7 +3,7 @@
 ## Membres du binôme
 
 - **Georges Divine Cacko Mouguen** — Matricule : `20386389`
-- **Adem-Abdelkarim Ghaoui** — Matricule : `20362049`
+- **Adem-Abdelkrim Ghaoui** — Matricule : `20362049`
 
 ## 1. Dépôt et fichiers principaux
 
