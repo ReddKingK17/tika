@@ -2,8 +2,8 @@
 
 ## Membres du binôme
 
-- **Prénom Nom** — Matricule : `XXXXXXXX`
-- **Prénom Nom** — Matricule : `XXXXXXXX`
+- **Georges Divine Cacko Mouguen** — Matricule : `20386389`
+- **Adem-Abdelkarim Ghaoui** — Matricule : `20362049`
 
 ## 1. Dépôt et fichiers principaux
 
@@ -29,7 +29,7 @@ Il contient deux jobs :
 
 ### 2.1 Tests exécutés
 
-Le workflow exécute les tests du module `tika-serialization` avec la commande suivante :
+Le workflow exécute uniquement les classes `ComponentNameResolverChatUniTestTest` et `ComponentRegistryMutationTest` du module `tika-serialization` :
 
 ```bash
 ./mvnw \
@@ -41,7 +41,7 @@ Le workflow exécute les tests du module `tika-serialization` avec la commande s
   -Djacoco.skip=true
 ```
 
-L’option `-pl tika-serialization` sélectionne le module étudié, tandis que `-am` construit également les modules dont il dépend.
+L’option `-pl tika-serialization` sélectionne le module étudié, tandis que `-am` construit également ses dépendances. Cette sélection permet de valider les tests concernés par notre travail sans exécuter toute la suite de tests d’Apache Tika, qui est beaucoup plus longue. Les journaux du CI confirment que `ComponentRegistryMutationTest` a bien été exécuté.
 
 ## 3. Configuration de Semgrep
 
@@ -198,7 +198,21 @@ Les neuf nouveaux résultats correspondent aux sept vulnérabilités introduites
 
 La vulnérabilité du gestionnaire de certificats TLS produit trois résultats, car Semgrep signale séparément ses trois méthodes de validation vides. Les six autres vulnérabilités produisent chacune un résultat.
 
-Les sept vulnérabilités correspondent à sept règles Semgrep distinctes. DES et le contexte SSL faible partagent le CWE-326, mais constituent deux types techniques différents et sont détectés par deux règles différentes.
+Les sept vulnérabilités correspondent à sept règles Semgrep distinctes. Le chiffrement DES relève du CWE-327, tandis que le contexte SSL faible relève du CWE-326.
+
+### 6.1 Résultats nouvellement introduits
+
+| # | Règle Semgrep | Fichier | Ligne |
+|---:|---|---|---:|
+| 1 | `object-deserialization` | `ServiceLoader.java` | 398 |
+| 2 | `use-of-md5` | `InputStreamDigester.java` | 126 |
+| 3 | `des-is-deprecated` | `EncryptedPrescriptionParser.java` | 64 |
+| 4 | `weak-random` | `TikaClient.java` | 76 |
+| 5 | `insecure-trust-manager` | `TikaClient.java` | 83 |
+| 6 | `insecure-trust-manager` | `TikaClient.java` | 87 |
+| 7 | `insecure-trust-manager` | `TikaClient.java` | 91 |
+| 8 | `weak-ssl-context` | `HttpClientFactory.java` | 504 |
+| 9 | `formatted-sql-string` | `DBBuffer.java` | 60 |
 
 ## 7. Résumé des vulnérabilités introduites
 
@@ -206,7 +220,7 @@ Les sept vulnérabilités correspondent à sept règles Semgrep distinctes. DES 
 |---:|---|---|---|---:|
 | 1 | Désérialisation non sûre | CWE-502 | `ServiceLoader.java` | 1 |
 | 2 | Hachage faible MD5 | CWE-328 | `InputStreamDigester.java` | 1 |
-| 3 | Chiffrement DES obsolète | CWE-326 | `EncryptedPrescriptionParser.java` | 1 |
+| 3 | Chiffrement DES obsolète | CWE-327 | `EncryptedPrescriptionParser.java` | 1 |
 | 4 | Générateur aléatoire non sécurisé | CWE-330 | `TikaClient.java` | 1 |
 | 5 | Validation de certificat TLS désactivée | CWE-295 | `TikaClient.java` | 3 |
 | 6 | Contexte SSL faible | CWE-326 | `HttpClientFactory.java` | 1 |
@@ -292,7 +306,7 @@ Un correctif serait d’utiliser SHA-256, SHA-512 ou un HMAC lorsqu’une authen
 ## 10. Vulnérabilité 3 : chiffrement DES obsolète
 
 - **Type :** algorithme de chiffrement obsolète
-- **CWE :** CWE-326
+- **CWE :** CWE-327
 - **Commit :** `776074a46`
 - **Ligne signalée :** 64
 
@@ -508,7 +522,11 @@ statement.setString(1, name);
 - Résultats nouvellement introduits : **1**
 - Aucun résultat de cette règle n’était présent dans `DBBuffer.java` avant la modification.
 
-## 15. Conclusion
+## 15. Utilisation d’outils d’intelligence artificielle
+
+Des outils d’intelligence artificielle générative, notamment ChatGPT et Claude, ont été utilisés comme soutien pour proposer du code, aider au diagnostic des erreurs, améliorer la documentation et reformuler certaines explications. Toutes les suggestions produites ont été relues, adaptées et validées par les membres du binôme. Les membres du binôme demeurent responsables du code, des analyses, des tests et du contenu final remis.
+
+## 16. Conclusion
 
 Le workflow GitHub Actions remplit le comportement attendu :
 
